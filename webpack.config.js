@@ -1,11 +1,10 @@
 const path = require('path');
-var FlowtypePlugin = require('flowtype-loader/plugin');
 
 module.exports = {
-  entry: './app.js',
+  entry: './src/app.js',
 
   output: {
-    path: path.resolve(__dirname, './destination'),
+    path: path.resolve(__dirname, './src/destination'),
     filename: 'build.js'
   },
 
@@ -14,7 +13,7 @@ module.exports = {
         minimize: false, // <---- disables uglify.
         // minimizer: [new UglifyJsPlugin()] if you want to customize it.
   }
-  
+
 
   // module: {
   //   rules: [
