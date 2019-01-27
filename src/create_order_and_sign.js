@@ -85,7 +85,8 @@ export async function createOrderAndSign() {
 
 
   // Set up the Order and fill it
-  const randomExpiration = getRandomFutureDateInSeconds();
+  const customPeriod = 5*365*24*60*60;
+  const randomExpiration = Number(getRandomFutureDateInSeconds()) + Number(customPeriod);
   console.log(`randomExpiration = ${randomExpiration}`);
   getExpirationInSecond(randomExpiration);
   const exchangeAddress = contractAddresses.exchange;
@@ -97,7 +98,7 @@ export async function createOrderAndSign() {
       takerAddress: NULL_ADDRESS,
       senderAddress: NULL_ADDRESS,
       feeRecipientAddress: NULL_ADDRESS,
-      expirationTimeSeconds: randomExpiration + 5*365*24*60*60,
+      expirationTimeSeconds: randomExpiration,
       salt: generatePseudoRandomSalt(),
       makerAssetAmount,
       takerAssetAmount,
