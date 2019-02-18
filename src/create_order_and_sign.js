@@ -18,17 +18,22 @@ import { getRandomFutureDateInSeconds } from './utils';
 import { INFURA, NETWORK_ID } from './config';
 
 const Web3 = require('web3');
-export const providerEngine = new Web3ProviderEngine();
+
 
 export async function createOrderAndSign() {
   console.log('Start createOrderAndSign');
 
-  // Compose our Providers, order matters
-  // Use the MetamaskSubprovider to wrap the browser extension wallet
-  // All account based and signing requests will go through the MetamaskSubprovider
-  providerEngine.addProvider(new MetamaskSubprovider(window.web3.currentProvider));
-  // Use an RPC provider to route all other requests
-  providerEngine.addProvider(new RPCSubprovider(INFURA.KOVAN_RPC_URL));
+  const providerEngine = new Web3ProviderEngine();
+  const signerProvider = web3.currentProvider.isMetaMask
+                    ? new MetamaskSubprovider(web3.currentProvider)
+                    : new SignerSubprovider(web3.currentProvider);
+
+  const rpcProvider = new RPCSubprovider(INFURA.KOVAN_RPC_URL);
+
+  // Add the signer first, all account based requests are handled by the signer
+  providerEngine.addProvider(signerProvider);
+  // Add the data provider, all logs, data fetching are handled by the rpcProvider
+  providerEngine.addProvider(rpcProvider);
   providerEngine.start();
   // Instantiate ContractWrappers with the provider
   const contractWrappers = new ContractWrappers(providerEngine, { networkId: NETWORK_ID.KOVAN });
